@@ -1,0 +1,8 @@
+{
+  "primer_table": "primers.tsv",
+  "genome": "/path/to/genome.fasta",
+  "mismatchpercent": 0,
+  "output": "resultats.primersearch",
+  "auto": true,
+  "verbose": false
+}

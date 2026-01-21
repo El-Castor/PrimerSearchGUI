@@ -1,0 +1,13 @@
+.DS_Store
+.Rhistory
+.RData
+.Ruserdata
+
+primersearch_work/
+primersearch_gui/runs/
+primersearch_gui/container.env
+primersearch_config.json
+primers.tsv
+*.primersearch
+*.log
+*.env
