@@ -11,3 +11,6 @@ primers.tsv
 *.primersearch
 *.log
 *.env
+!templates/container.env
+!templates/primers.tsv
+!templates/primersearch_config.json

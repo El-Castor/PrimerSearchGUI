@@ -1,66 +1,87 @@
-# PrimerSearch GUI + CLI
+# PrimerSearch GUI and CLI
 
-Ce depot propose deux facons d'utiliser `primersearch` (EMBOSS) :
+This repository provides two ways to run EMBOSS primersearch:
 
-- **CLI (script Python)** : ideal pour les pipelines, l'automatisation, ou les serveurs.
-- **GUI (Shiny)** : ideal pour une utilisation interactive et rapide.
+- CLI (Python script) for automation and batch runs.
+- GUI (Shiny) for interactive use.
 
-## Choisir la bonne option
+## Folder layout
 
-- **CLI** : quand vous avez plusieurs jeux de primers, des runs batch, ou un HPC.
-- **GUI** : quand vous voulez tester rapidement quelques primers sans ligne de commande.
-- **GUI via Docker** : quand vous ne voulez pas installer R/EMBOSS localement.
+- `run_primersearch.py` - CLI script
+- `primersearch_gui/` - Shiny app + Docker helper
+- `templates/` - starter files for config, primers, and container settings
 
-## CLI (script Python)
+## Quick start (Docker, no local install)
 
-1) Preparer les fichiers (exemples fournis) :
+This is the easiest option for non-coders. It uses a script that builds and
+runs the container for you.
 
-```bash
-cp primers.example.tsv primers.tsv
-cp primersearch_config.example.json primersearch_config.json
-```
-
-2) Editer `primersearch_config.json` avec vos chemins :
-- `primer_table` : chemin vers votre TSV
-- `genome` : chemin vers le genome (local)
-
-3) Executer :
+1) Copy templates
 
 ```bash
-conda activate emboss_suite_env
-python3 run_primersearch.py --config primersearch_config.json
+cp templates/container.env primersearch_gui/container.env
+cp templates/primers.tsv primers.tsv
+cp templates/primersearch_config.json primersearch_config.json
 ```
 
-## GUI locale (Shiny)
+2) Edit `primersearch_gui/container.env` with a text editor (no code):
+
+- `GENOMES_DIR` = path to your genomes on your computer
+- `GENOMES_MOUNT` = path used inside the container (default `/data/GENOMES`)
+- `SHINY_MAX_UPLOAD_MB` = upload limit in MB (increase for large genomes)
+
+If `GENOMES_DIR` is empty, you will upload the genome file in the GUI instead.
+
+3) Run the build and start the app
+
+```bash
+bash primersearch_gui/run_container.sh
+```
+
+4) Open the app in your browser
+
+```
+http://localhost:3838
+```
+
+5) Use the GUI
+
+- Upload `primers.tsv`
+- Upload `primersearch_config.json` (optional)
+- Provide the genome either by file upload or by path
+  - If you mounted genomes, use `/data/GENOMES/...` in the GUI
+
+## GUI local (Shiny)
+
+Use this if you already have R and EMBOSS installed locally.
 
 ```bash
 conda activate emboss_suite_env
 R -e 'shiny::runApp("primersearch_gui")'
 ```
 
-## GUI via Docker (recommande pour non-install)
+## CLI usage
 
-La facon la plus simple est d'utiliser le script :
+Use this for pipelines or batch runs.
 
-```bash
-bash primersearch_gui/run_container.sh
-```
-
-Configuration (sans code) :
-- Editer `primersearch_gui/container.env.example`
-- Copier en `primersearch_gui/container.env`
+1) Copy templates
 
 ```bash
-cp primersearch_gui/container.env.example primersearch_gui/container.env
+cp templates/primers.tsv primers.tsv
+cp templates/primersearch_config.json primersearch_config.json
 ```
 
-Deux modes pour le genome :
+2) Edit `primersearch_config.json` and set the genome path.
 
-- **Upload** dans l'interface (plus simple, mais taille limitee).
-- **Chemin monte** via Docker (recommande pour gros genomes) : utilisez un chemin
-  `/data/GENOMES/...` dans la GUI si vous montez `GENOMES`.
+3) Run:
 
-## Notes sur les donnees
+```bash
+conda activate emboss_suite_env
+python3 run_primersearch.py --config primersearch_config.json
+```
 
-- Les fichiers locaux (`primersearch_config.json`, `primers.tsv`, runs, etc.) ne sont pas versionnes.
-- Utilisez les fichiers `*.example.*` comme modeles.
+## Notes about data
+
+- Local files are ignored by git (`primers.tsv`, `primersearch_config.json`,
+  `primersearch_work/`, `primersearch_gui/runs/`, `primersearch_gui/container.env`).
+- Use files in `templates/` as clean starting points.

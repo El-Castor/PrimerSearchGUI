@@ -9,7 +9,7 @@ script via a simple GUI.
 - `primersearch` available in your PATH (for example by activating your conda
   environment before launching the app).
 
-## Run
+## Run (local)
 
 From the project root:
 
@@ -59,8 +59,8 @@ bash primersearch_gui/run_container.sh
 ```
 
 You can configure it by copying and editing
-`primersearch_gui/container.env.example`. The script reads
-`primersearch_gui/container.env` automatically.
+`templates/container.env` and saving it as `primersearch_gui/container.env`.
+The script reads `primersearch_gui/container.env` automatically.
 
 Options (examples):
 
